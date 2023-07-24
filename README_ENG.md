@@ -23,3 +23,6 @@ The `config.json` configuration file is used to set the behavior of the program 
   - `ad_allowed`: boolean of whether the post can be promotional;
   - `repost_allowed`: boolean of whether the post can be a repost;
   - `restricted_words`: a list of banned words;
+
+## Contributing
+This repository is open for contribution. So feel free to open an issue and make pull requests.
