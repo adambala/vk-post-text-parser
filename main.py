@@ -6,8 +6,8 @@ import json
 API_VERSION = "5.131"
 POSTS_AT_A_TIME = 100  # VK API post count limit
 
-with open("config.json", "r", encoding="utf-8") as file:
-    f_data = json.load(file)
+with open("config.json", "r", encoding="utf-8") as config_file:
+    f_data = json.load(config_file)
 
     ACCESS_TOKEN = f_data["access_token"]
     DOMAIN = f_data["domain"]
@@ -65,14 +65,14 @@ def main():
         post_number = max_offset
 
     post_offset = 1
-    with open("output.txt", "w", encoding="utf-8") as file:
+    with open("output.txt", "w", encoding="utf-8") as output_file:
         while (post_offset <= post_number) and (post_offset <= max_offset):
             posts = parse_wall_data(api, post_offset)
             post_offset += POSTS_AT_A_TIME
 
             for post_data in posts:
                 if is_appropriate_post(post_data):
-                    file.write(post_data["text"] + "\n")
+                    output_file.write(post_data["text"] + "\n")
 
 
 if __name__ == "__main__":
