@@ -6,6 +6,20 @@ import json
 API_VERSION = "5.131"
 POSTS_AT_A_TIME = 100  # VK API post count limit
 
+with open("config.json", "r", encoding="utf-8") as file:
+    f_data = json.load(file)
+
+    ACCESS_TOKEN = f_data["access_token"]
+    DOMAIN = f_data["domain"]
+
+    RESTRICTED_WORDS = tuple(f_data["post_filter"]["restricted_words"])
+    AD_ALLOWED = f_data["post_filter"]["ad_allowed"]
+    REPOST_ALLOWED = f_data["post_filter"]["repost_allowed"]
+
+    post_number = f_data["post_number"]
+
+    del f_data
+
 
 def is_appropriate_post(post_data) -> bool:
     post_text = post_data["text"]
@@ -17,7 +31,7 @@ def is_appropriate_post(post_data) -> bool:
     ))
 
 
-def get_max_offset() -> int:
+def get_max_offset(api) -> int:
     try:
         return api.method(
             method="wall.get",
@@ -28,7 +42,7 @@ def get_max_offset() -> int:
                          "https://dev.vk.com/api/access-token/getting-started")
 
 
-def parse_wall_data(post_offset) -> List[Dict]:
+def parse_wall_data(api, post_offset) -> List[Dict]:
     data = api.method(
         method="wall.get",
         values={"domain": DOMAIN, "offset": post_offset, "count": POSTS_AT_A_TIME}
@@ -41,23 +55,11 @@ def parse_wall_data(post_offset) -> List[Dict]:
     } for post in data]
 
 
-if __name__ == "__main__":
-    with open("config.json", "r", encoding="utf-8") as file:
-        f_data = json.load(file)
-
-        ACCESS_TOKEN = f_data["access_token"]
-        DOMAIN = f_data["domain"]
-
-        RESTRICTED_WORDS = tuple(f_data["post_filter"]["restricted_words"])
-        AD_ALLOWED = f_data["post_filter"]["ad_allowed"]
-        REPOST_ALLOWED = f_data["post_filter"]["repost_allowed"]
-
-        post_number = f_data["post_number"]
-
-        del f_data
+def main():
+    global post_number
 
     api = vk_api.VkApi(token=ACCESS_TOKEN, api_version=API_VERSION)
-    max_offset = get_max_offset()
+    max_offset = get_max_offset(api)
 
     if not post_number:
         post_number = max_offset
@@ -65,9 +67,13 @@ if __name__ == "__main__":
     post_offset = 1
     with open("output.txt", "w", encoding="utf-8") as file:
         while (post_offset <= post_number) and (post_offset <= max_offset):
-            posts = parse_wall_data(post_offset)
+            posts = parse_wall_data(api, post_offset)
             post_offset += POSTS_AT_A_TIME
 
             for post_data in posts:
                 if is_appropriate_post(post_data):
                     file.write(post_data["text"] + "\n")
+
+
+if __name__ == "__main__":
+    main()
