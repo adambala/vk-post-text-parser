@@ -18,7 +18,7 @@ A Python script that uses the `vk_api` module to parse the texts of posts from a
 The `config.json` configuration file is used to set the behavior of the program to suit the user's needs. It contains:
 - `access_token`: your [access token](https://dev.vk.com/api/access-token/getting-started) to VK API methods;
 - `domain`: id of the VKontakte page or group;
-- `post_number`: number of posts to retrieve;
+- `post_number`: number of posts to retrieve. If set to `0` all page's or group's post will be retrieved;
 - `post_filter`: post filter, which includes:
   - `ad_allowed`: boolean of whether the post can be promotional;
   - `repost_allowed`: boolean of whether the post can be a repost;
