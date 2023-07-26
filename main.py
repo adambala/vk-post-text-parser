@@ -16,7 +16,7 @@ with open("config.json", "r", encoding="utf-8") as config_file:
     AD_ALLOWED = f_data["post_filter"]["ad_allowed"]
     REPOST_ALLOWED = f_data["post_filter"]["repost_allowed"]
 
-    post_number = f_data["post_number"]
+    POST_NUMBER = f_data["post_number"]
 
     del f_data
 
@@ -56,17 +56,17 @@ def parse_wall_data(api, post_offset) -> List[Dict]:
 
 
 def main():
-    global post_number
+    global POST_NUMBER
 
     api = vk_api.VkApi(token=ACCESS_TOKEN, api_version=API_VERSION)
     max_offset = get_max_offset(api)
 
-    if not post_number:
-        post_number = max_offset
+    if not POST_NUMBER:
+        POST_NUMBER = max_offset
 
     post_offset = 1
     with open("output.txt", "w", encoding="utf-8") as output_file:
-        while (post_offset <= post_number) and (post_offset <= max_offset):
+        while (post_offset <= POST_NUMBER) and (post_offset <= max_offset):
             posts = parse_wall_data(api, post_offset)
             post_offset += POSTS_AT_A_TIME
 
