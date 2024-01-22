@@ -43,10 +43,11 @@ def get_max_offset(api) -> int:
 
 
 def parse_wall_data(api, post_offset) -> List[Dict]:
-    data = api.method(
-        method="wall.get",
-        values={"domain": DOMAIN, "offset": post_offset, "count": POSTS_AT_A_TIME}
-    )["items"]
+    data = api.method(method="wall.get", values={
+            "domain": DOMAIN,
+            "offset": post_offset,
+            "count": POSTS_AT_A_TIME
+        })["items"]
 
     return [{
         "text": post["text"],
